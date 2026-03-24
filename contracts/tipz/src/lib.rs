@@ -41,15 +41,16 @@ impl TipzContract {
     // Initialization
     // ──────────────────────────────────────────────
 
-    /// Initialize the contract with admin, fee collector, and fee percentage.
+    /// Initialize the contract with admin, fee collector, fee percentage, and native token address.
     /// Can only be called once.
     pub fn initialize(
         env: Env,
         admin: Address,
         fee_collector: Address,
         fee_bps: u32,
+        native_token: Address,
     ) -> Result<(), ContractError> {
-        admin::initialize(&env, &admin, &fee_collector, fee_bps)
+        admin::initialize(&env, &admin, &fee_collector, fee_bps, &native_token)
     }
 
     // ──────────────────────────────────────────────
@@ -58,13 +59,13 @@ impl TipzContract {
 
     /// Register a new creator profile.
     pub fn register_profile(
-        env: Env,
-        caller: Address,
-        username: String,
-        display_name: String,
-        bio: String,
-        image_url: String,
-        x_handle: String,
+        _env: Env,
+        _caller: Address,
+        _username: String,
+        _display_name: String,
+        _bio: String,
+        _image_url: String,
+        _x_handle: String,
     ) -> Result<Profile, ContractError> {
         profile::register_profile(
             &env,
@@ -127,8 +128,7 @@ impl TipzContract {
         _amount: i128,
         _message: String,
     ) -> Result<(), ContractError> {
-        // TODO: Implement in issue #7 - Send Tip
-        Err(ContractError::NotInitialized)
+        tips::send_tip(&env, &tipper, &creator, amount, &message)
     }
 
     /// Withdraw accumulated tips (fee deducted).
