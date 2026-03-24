@@ -23,6 +23,7 @@ mod profile;
 mod storage;
 mod tips;
 mod types;
+mod validation;
 
 #[cfg(test)]
 mod test;
@@ -67,15 +68,11 @@ impl TipzContract {
         _image_url: String,
         _x_handle: String,
     ) -> Result<Profile, ContractError> {
-        profile::register_profile(
-            &env,
-            caller,
-            username,
-            display_name,
-            bio,
-            image_url,
-            x_handle,
-        )
+        // Validate username format (issue #4)
+        crate::validation::validate_username(&_username)?;
+
+        // TODO: Implement remaining logic in issue #1 - Profile Registration
+        Err(ContractError::NotInitialized)
     }
 
     /// Update an existing profile (owner only).
