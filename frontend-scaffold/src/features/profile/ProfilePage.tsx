@@ -1,18 +1,17 @@
-import React from "react";
 import { CalendarDays, ExternalLink, PenSquare, Sparkles } from "lucide-react";
+import React from "react";
 import { Link } from "react-router-dom";
 
 import PageContainer from "../../components/layout/PageContainer";
 import AmountDisplay from "../../components/shared/AmountDisplay";
 import CreditBadge from "../../components/shared/CreditBadge";
-import TipCard from "../../components/shared/TipCard";
 import WalletConnect from "../../components/shared/WalletConnect";
 import Avatar from "../../components/ui/Avatar";
 import Button from "../../components/ui/Button";
 import Card from "../../components/ui/Card";
-import EmptyState from "../../components/ui/EmptyState";
 import { useProfile } from "../../hooks";
-import { mockProfile, mockTips } from "../mockData";
+import { mockProfile } from "../mockData";
+import ActivityFeed from "./ActivityFeed";
 
 const ProfilePage: React.FC = () => {
   const { profile } = useProfile();
@@ -87,7 +86,11 @@ const ProfilePage: React.FC = () => {
 
         <Card className="space-y-4" padding="lg">
           <h2 className="text-xl font-black uppercase">Next actions</h2>
-          <Button icon={<PenSquare size={18} />}>Edit profile</Button>
+          <Link to="/profile/edit" className="block">
+            <Button icon={<PenSquare size={18} />} className="w-full">
+              Edit profile
+            </Button>
+          </Link>
           <Link to={`/@${activeProfile.username}`} className="block">
             <Button variant="outline" className="w-full" iconRight={<ExternalLink size={18} />}>
               Open public tip page
@@ -113,18 +116,7 @@ const ProfilePage: React.FC = () => {
             </Link>
           </div>
 
-          {mockTips.length === 0 ? (
-            <EmptyState
-              title="No tips yet"
-              description="Share your public link and your next supporter will appear here."
-            />
-          ) : (
-            <div className="grid gap-4 md:grid-cols-2">
-              {mockTips.slice(0, 4).map((tip) => (
-                <TipCard key={`${tip.from}-${tip.timestamp}`} tip={tip} showReceiver={false} />
-              ))}
-            </div>
-          )}
+          <ActivityFeed address={activeProfile.owner} limit={4} />
         </Card>
       </section>
     </PageContainer>
